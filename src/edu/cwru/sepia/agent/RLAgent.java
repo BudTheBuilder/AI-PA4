@@ -90,6 +90,7 @@ public class RLAgent extends Agent {
     /**
      * We've implemented some setup code for your convenience. Change what you need to.
      */
+    //TODO
     @Override
     public Map<Integer, Action> initialStep(State.StateView stateView, History.HistoryView historyView) {
 
@@ -152,7 +153,8 @@ public class RLAgent extends Agent {
      */
     @Override
     public Map<Integer, Action> middleStep(State.StateView stateView, History.HistoryView historyView) {
-        return null;
+        //TODO
+    	return null;
     }
 
     /**
@@ -163,7 +165,7 @@ public class RLAgent extends Agent {
      */
     @Override
     public void terminalStep(State.StateView stateView, History.HistoryView historyView) {
-
+    	//TODO
         // MAKE SURE YOU CALL printTestData after you finish a test episode.
 
         // Save your weights
@@ -182,7 +184,8 @@ public class RLAgent extends Agent {
      * @return The updated weight vector.
      */
     public double[] updateWeights(double[] oldWeights, double[] oldFeatures, double totalReward, State.StateView stateView, History.HistoryView historyView, int footmanId) {
-        return null;
+        //TODO
+    	return null;
     }
 
     /**
@@ -195,7 +198,8 @@ public class RLAgent extends Agent {
      * @return The enemy footman ID this unit should attack
      */
     public int selectAction(State.StateView stateView, History.HistoryView historyView, int attackerId) {
-        return -1;
+        //TODO
+    	return -1;
     }
 
     /**
@@ -232,7 +236,8 @@ public class RLAgent extends Agent {
      * @return The current reward
      */
     public double calculateReward(State.StateView stateView, History.HistoryView historyView, int footmanId) {
-        return 0;
+        //TODO
+    	return 0;
     }
 
     /**
@@ -253,6 +258,7 @@ public class RLAgent extends Agent {
                              History.HistoryView historyView,
                              int attackerId,
                              int defenderId) {
+    	//TODO
         return 0;
     }
 
@@ -277,6 +283,7 @@ public class RLAgent extends Agent {
                                            History.HistoryView historyView,
                                            int attackerId,
                                            int defenderId) {
+    	//TODO
         return null;
     }
 
