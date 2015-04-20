@@ -48,6 +48,8 @@ public class RLAgent extends Agent {
      * Your Q-function weights.
      */
     public Double[] weights;
+    
+    int turnNum = 0;
 
     /**
      * These variables are set for you according to the assignment definition. You can change them,
@@ -236,8 +238,39 @@ public class RLAgent extends Agent {
      * @return The current reward
      */
     public double calculateReward(State.StateView stateView, History.HistoryView historyView, int footmanId) {
-        //TODO
-    	return 0;
+        //TODO: Done?
+    	double reward = 0;
+    	
+    	//penalize for each command issued (for each action taken)
+    	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, turnNum);
+        for (Map.Entry<Integer, Action> commandEntry : commandsIssued.entrySet()) {
+            reward -= 0.1; 
+        }
+    	
+    	//calculate rewards based on damage given/taken
+    	for(DamageLog damageLog : historyView.getDamageLogs(turnNum)){
+    		if(myFootmen.contains(damageLog.getAttackerID())){
+    			reward += damageLog.getDefenderController();
+    		}
+    		
+    		if(enemyFootmen.contains(damageLog.getAttackerID())){
+    			reward -= damageLog.getDefenderController();
+    		}
+    	}
+    	
+    	//calculate rewards based on deaths
+    	for(DeathLog deathLog : historyView.getDeathLogs(turnNum)){
+    		if(enemyFootmen.contains(deathLog.getDeadUnitID())){
+    			reward += 100;
+    		}
+    		
+    		if(myFootmen.contains(deathLog.getDeadUnitID())){
+    			//reward -= damage;
+    			reward -= 100;
+    		}
+    	}
+    	
+    	return reward;
     }
 
     /**
