@@ -250,11 +250,11 @@ public class RLAgent extends Agent {
     	//calculate rewards based on damage given/taken
     	for(DamageLog damageLog : historyView.getDamageLogs(turnNum)){
     		if(myFootmen.contains(damageLog.getAttackerID())){
-    			reward += damageLog.getDefenderController();
+    			reward += damageLog.getDamage();
     		}
     		
     		if(enemyFootmen.contains(damageLog.getAttackerID())){
-    			reward -= damageLog.getDefenderController();
+    			reward -= damageLog.getDamage();
     		}
     	}
     	
@@ -265,7 +265,6 @@ public class RLAgent extends Agent {
     		}
     		
     		if(myFootmen.contains(deathLog.getDeadUnitID())){
-    			//reward -= damage;
     			reward -= 100;
     		}
     	}
