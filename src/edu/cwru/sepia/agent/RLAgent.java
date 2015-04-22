@@ -186,8 +186,30 @@ public class RLAgent extends Agent {
      * @return The updated weight vector.
      */
     public double[] updateWeights(double[] oldWeights, double[] oldFeatures, double totalReward, State.StateView stateView, History.HistoryView historyView, int footmanId) {
-        //TODO
-    	return null;
+        //TODO: Maybe done?
+    	//w <-- wi - alpha*(-(R(s,a) + gamma*max(Qw(s',a')) - Qw(s,a))*fi(s,a)
+    	double [] w = oldWeights;
+    	
+    	double Qprime = -9999999;
+    	for(int enemyID: enemyFootmen){
+    		Qprime = Math.max(Qprime, calcQValue(stateView, historyView, footmanId, enemyID));
+    	}
+    	
+    	int enemyId = 0;
+    	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, turnNum);
+        for (Map.Entry<Integer, Action> commandEntry : commandsIssued.entrySet()) {
+            if(commandEntry.getKey() == footmanId){
+            	//make sure this gets the ID of the attacked enemy
+            	enemyId = commandEntry.getValue().getUnitId();
+            }
+        	System.out.println("Unit " + commandEntry.getKey() + " was commanded to " + commandEntry.getValue().toString());
+        }
+    	
+    	for(int i = 0; i < oldWeights.length; i++)
+    	{
+    		w[i] = oldWeights[i] - (learningRate * (-(totalReward + gamma * Qprime - calcQValue(stateView, historyView, footmanId, enemyId))) * oldFeatures[i]);
+    	}
+    	return w;
     }
 
     /**
