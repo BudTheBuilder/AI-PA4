@@ -49,8 +49,6 @@ public class RLAgent extends Agent {
      */
     public Double[] weights;
     
-    int turnNum = 0;
-
     /**
      * These variables are set for you according to the assignment definition. You can change them,
      * but it is not recommended. If you do change them please let us know and explain your reasoning for
@@ -194,9 +192,9 @@ public class RLAgent extends Agent {
     	for(int enemyID: enemyFootmen){
     		Qprime = Math.max(Qprime, calcQValue(stateView, historyView, footmanId, enemyID));
     	}
-    	
+    	int lastTurnNum = stateView.getTurnNumber()-1;
     	int enemyId = 0;
-    	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, turnNum);
+    	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, lastTurnNum);
         for (Map.Entry<Integer, Action> commandEntry : commandsIssued.entrySet()) {
             if(commandEntry.getKey() == footmanId){
             	//make sure this gets the ID of the attacked enemy
@@ -263,14 +261,16 @@ public class RLAgent extends Agent {
         //TODO: Done?
     	double reward = 0;
     	
+    	int lastTurnNum = stateView.getTurnNumber()-1;
+    	
     	//penalize for each command issued (for each action taken)
-    	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, turnNum);
+    	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, lastTurnNum);
         for (Map.Entry<Integer, Action> commandEntry : commandsIssued.entrySet()) {
             reward -= 0.1; 
         }
     	
     	//calculate rewards based on damage given/taken
-    	for(DamageLog damageLog : historyView.getDamageLogs(turnNum)){
+    	for(DamageLog damageLog : historyView.getDamageLogs(lastTurnNum)){
     		if(myFootmen.contains(damageLog.getAttackerID())){
     			reward += damageLog.getDamage();
     		}
@@ -281,7 +281,7 @@ public class RLAgent extends Agent {
     	}
     	
     	//calculate rewards based on deaths
-    	for(DeathLog deathLog : historyView.getDeathLogs(turnNum)){
+    	for(DeathLog deathLog : historyView.getDeathLogs(lastTurnNum)){
     		if(enemyFootmen.contains(deathLog.getDeadUnitID())){
     			reward += 100;
     		}
