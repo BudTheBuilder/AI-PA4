@@ -262,6 +262,7 @@ public class RLAgent extends Agent {
     	double reward = 0;
     	
     	int lastTurnNum = stateView.getTurnNumber()-1;
+    	reward += Math.pow(gamma, lastTurnNum);
     	
     	//penalize for each command issued (for each action taken)
     	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, lastTurnNum);
@@ -271,23 +272,22 @@ public class RLAgent extends Agent {
     	
     	//calculate rewards based on damage given/taken
     	for(DamageLog damageLog : historyView.getDamageLogs(lastTurnNum)){
-    		if(myFootmen.contains(damageLog.getAttackerID())){
+    		if(footmanId == damageLog.getAttackerID()){
     			reward += damageLog.getDamage();
     		}
     		
-    		if(enemyFootmen.contains(damageLog.getAttackerID())){
+    		else{
     			reward -= damageLog.getDamage();
     		}
     	}
     	
     	//calculate rewards based on deaths
     	for(DeathLog deathLog : historyView.getDeathLogs(lastTurnNum)){
-    		if(enemyFootmen.contains(deathLog.getDeadUnitID())){
-    			reward += 100;
-    		}
-    		
-    		if(myFootmen.contains(deathLog.getDeadUnitID())){
+    		if(footmanId == deathLog.getDeadUnitID()){
     			reward -= 100;
+    		}
+    		else{
+    			reward += 100;
     		}
     	}
     	
