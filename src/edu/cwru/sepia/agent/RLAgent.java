@@ -155,7 +155,34 @@ public class RLAgent extends Agent {
      */
     @Override
     public Map<Integer, Action> middleStep(State.StateView stateView, History.HistoryView historyView) {
-        //TODO
+    	Map<Integer, ActionResult> actionResults = historyView.getCommandFeedback(playernum, stateView.getTurnNumber() - 1);
+    	if(stateView.getTurnNumber() > 1) { 
+    		for(DeathLog deathLog : historyView.getDeathLogs(stateView.getTurnNumber() -1)) {
+    			if(enemyFootmen.contains(deathLog.getDeadUnitID())){
+    				for (int i = 0; i < myFootmen.size(); i++) {
+    					if(enemyFootmen.get(i) == deathLog.getDeadUnitID()) 
+    						enemyFootmen.remove(i);
+    				}
+    			}
+    			if(myFootmen.contains(deathLog.getDeadUnitID())){
+    				for (int i = 0; i < myFootmen.size(); i++) {
+    					if(myFootmen.get(i) == deathLog.getDeadUnitID()) 
+    						myFootmen.remove(i);
+    				}
+    			}
+    		}
+    	}
+    	for (ActionResult result : actionResults.values()) {
+        	if(result.getFeedback().equals(ActionFeedback.FAILED)) {
+        		//The action failed, so give the unit another action
+        		//result.getAction().getUnitId()
+        	}
+        		//System.out.println("Action FAILED!!");
+        	if(result.getFeedback().equals(ActionFeedback.COMPLETED)) {
+        		//The action was completed
+        	}
+        }
+         	
     	return null;
     }
 
@@ -222,8 +249,20 @@ public class RLAgent extends Agent {
      * @return The enemy footman ID this unit should attack
      */
     public int selectAction(State.StateView stateView, History.HistoryView historyView, int attackerId) {
-        //TODO
-    	return -1;
+    	int maxEnemyID = -1;
+    	double maxQValue = Integer.MIN_VALUE;
+        for(int friendID : myFootmen) {
+        	if(friendID == attackerId) {
+        		for(int enemyID : enemyFootmen) {
+        			//Set the maxQValue to be the greatest q value calculated so far
+        			if(calcQValue(stateView, historyView, friendID, enemyID) > maxQValue) {
+        				maxQValue = calcQValue(stateView, historyView, friendID, enemyID);
+        				maxEnemyID = enemyID;
+        			}
+        		}
+        	}
+        }
+    	return maxEnemyID;
     }
 
     /**
@@ -337,7 +376,12 @@ public class RLAgent extends Agent {
                                            History.HistoryView historyView,
                                            int attackerId,
                                            int defenderId) {
-    	//TODO
+    	double[] featureArr = new double[NUM_FEATURES];
+    	featureArr[0] = 1.0;
+    	
+    	Unit.UnitView myUnit = stateView.getUnit(attackerId);
+    	Unit.UnitView enemyUnit = stateView.getUnit(defenderId);
+    	//featureArr[1] = 
         return null;
     }
 
@@ -436,5 +480,9 @@ public class RLAgent extends Agent {
     @Override
     public void loadPlayerData(InputStream inputStream) {
 
+    }
+    
+    public int chebyshevDistance(int unit1x, int unit1y, int unit2x, int unit2y) {
+        return Math.max(Math.abs(unit1x - unit2x), Math.abs(unit1y - unit2y));
     }
 }
