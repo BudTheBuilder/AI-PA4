@@ -313,7 +313,14 @@ public class RLAgent extends Agent {
                              int attackerId,
                              int defenderId) {
     	//TODO
-        return 0;
+    	//Qw(s,a) = summation(wi * fi(s,a)
+    	double Qw = 0;
+    	double [] feature = calculateFeatureVector(stateView, historyView, attackerId, defenderId);
+    	for(int i = 0; i < weights.length; i++){
+    		Qw = weights[i] + feature[i];
+    	}
+    	
+        return Qw;
     }
 
     /**
