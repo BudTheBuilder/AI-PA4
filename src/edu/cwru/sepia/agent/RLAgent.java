@@ -49,8 +49,6 @@ public class RLAgent extends Agent {
      */
     public Double[] weights;
     
-    int turnNum = 0;
-
     /**
      * These variables are set for you according to the assignment definition. You can change them,
      * but it is not recommended. If you do change them please let us know and explain your reasoning for
@@ -221,9 +219,9 @@ public class RLAgent extends Agent {
     	for(int enemyID: enemyFootmen){
     		Qprime = Math.max(Qprime, calcQValue(stateView, historyView, footmanId, enemyID));
     	}
-    	
+    	int lastTurnNum = stateView.getTurnNumber()-1;
     	int enemyId = 0;
-    	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, turnNum);
+    	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, lastTurnNum);
         for (Map.Entry<Integer, Action> commandEntry : commandsIssued.entrySet()) {
             if(commandEntry.getKey() == footmanId){
             	//make sure this gets the ID of the attacked enemy
@@ -302,31 +300,32 @@ public class RLAgent extends Agent {
         //TODO: Done?
     	double reward = 0;
     	
+    	int lastTurnNum = stateView.getTurnNumber()-1;
+    	reward += Math.pow(gamma, lastTurnNum);
+    	
     	//penalize for each command issued (for each action taken)
-    	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, turnNum);
+    	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, lastTurnNum);
         for (Map.Entry<Integer, Action> commandEntry : commandsIssued.entrySet()) {
             reward -= 0.1; 
         }
     	
     	//calculate rewards based on damage given/taken
-    	for(DamageLog damageLog : historyView.getDamageLogs(turnNum)){
-    		if(myFootmen.contains(damageLog.getAttackerID())){
+    	for(DamageLog damageLog : historyView.getDamageLogs(lastTurnNum)){
+    		if(footmanId == damageLog.getAttackerID()){
     			reward += damageLog.getDamage();
     		}
-    		
-    		if(enemyFootmen.contains(damageLog.getAttackerID())){
+    		else if(footmanId == damageLog.getDefenderID()){
     			reward -= damageLog.getDamage();
     		}
     	}
     	
     	//calculate rewards based on deaths
-    	for(DeathLog deathLog : historyView.getDeathLogs(turnNum)){
-    		if(enemyFootmen.contains(deathLog.getDeadUnitID())){
-    			reward += 100;
-    		}
-    		
-    		if(myFootmen.contains(deathLog.getDeadUnitID())){
+    	for(DeathLog deathLog : historyView.getDeathLogs(lastTurnNum)){
+    		if(footmanId == deathLog.getDeadUnitID()){
     			reward -= 100;
+    		}
+    		else{
+    			reward += 100;
     		}
     	}
     	
@@ -352,7 +351,14 @@ public class RLAgent extends Agent {
                              int attackerId,
                              int defenderId) {
     	//TODO
-        return 0;
+    	//Qw(s,a) = summation(wi * fi(s,a)
+    	double Qw = 0;
+    	double [] feature = calculateFeatureVector(stateView, historyView, attackerId, defenderId);
+    	for(int i = 0; i < weights.length; i++){
+    		Qw = weights[i] + feature[i];
+    	}
+    	
+        return Qw;
     }
 
     /**
@@ -376,12 +382,17 @@ public class RLAgent extends Agent {
                                            History.HistoryView historyView,
                                            int attackerId,
                                            int defenderId) {
+
     	double[] featureArr = new double[NUM_FEATURES];
     	featureArr[0] = 1.0;
     	
     	Unit.UnitView myUnit = stateView.getUnit(attackerId);
     	Unit.UnitView enemyUnit = stateView.getUnit(defenderId);
     	//featureArr[1] = 
+
+    	//need to pick how we want to do features.
+    	//Possible ones: Distance between f & e; how many f attacking that e; is e attacking f?
+
         return null;
     }
 
