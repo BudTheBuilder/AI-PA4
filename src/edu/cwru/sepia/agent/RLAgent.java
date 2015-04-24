@@ -275,8 +275,7 @@ public class RLAgent extends Agent {
     		if(footmanId == damageLog.getAttackerID()){
     			reward += damageLog.getDamage();
     		}
-    		
-    		else{
+    		else if(footmanId == damageLog.getDefenderID()){
     			reward -= damageLog.getDamage();
     		}
     	}
@@ -345,6 +344,8 @@ public class RLAgent extends Agent {
                                            int attackerId,
                                            int defenderId) {
     	//TODO
+    	//need to pick how we want to do features.
+    	//Possible ones: Distance between f & e; how many f attacking that e; is e attacking f?
         return null;
     }
 
