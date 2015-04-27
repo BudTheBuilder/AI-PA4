@@ -5,21 +5,21 @@
 			<ClassName>edu.cwru.sepia.agent.RLAgent</ClassName>
 			<!-- You can change the values of these arguments. The first number is the amount of test episodes
 			you should run. If the current episode number is greater than this you should call sys.exit -->
-			<Argument>30</Argument> <!-- Number of episodes to learn -->
-			<Argument>false</Argument> <!-- If 1 will try to load the weights file in the constructor -->
+			<Argument>10</Argument> <!-- Number of episodes to learn -->
+			<Argument>true</Argument> <!-- If 1 will try to load the weights file in the constructor -->
 		</AgentClass>
 	</Player>
 
 	<!-- When you have your agent working, you can do the learning without the visual agent.
 	This means you won't have to click start at the end of each episode and things will run a lot faster.
 	To comment it out just wrap the <Player></Player> tags in XML comments -->
-	<Player Id="0">
+	<!-- <Player Id="0">
 		<AgentClass>
 			<ClassName>edu.cwru.sepia.agent.visual.VisualAgent</ClassName>
 			<Argument>true</Argument>
 			<Argument>false</Argument>
 		</AgentClass>
-	</Player>
+	</Player> -->
 
 
 	<Player Id="1">

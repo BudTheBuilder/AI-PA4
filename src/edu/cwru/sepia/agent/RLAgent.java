@@ -120,7 +120,7 @@ public class RLAgent extends Agent {
     public Map<Integer, Action> initialStep(State.StateView stateView, History.HistoryView historyView) {
     	
     	//Check if we ran 10 episodes already, if so, run evaluations
-    	if(numEpisodes > 0 && numEpisodes % 10 == 0 && !runningEvals) {
+    	if(numEpisodesCompleted % 10 == 0 && !runningEvals) {
     		runningEvals = true;
     		numEvals = 0;
     	}
@@ -289,9 +289,6 @@ public class RLAgent extends Agent {
     		for (int unit : myFootmen) {
 
     			int enemyID = selectAction(stateView, historyView, unit);
-    			if(enemyID < 0 || unit < 0) {
-    				int j = 0;
-    			}
     			prevQValues.put(unit, calcQValue(stateView, historyView, unit, enemyID));
     			prevFeatures.put(unit, calculateFeatureVector(stateView, historyView, unit, enemyID));
     			actions.put(unit, Action.createCompoundAttack(unit, selectAction(stateView, historyView, unit)));
@@ -317,8 +314,9 @@ public class RLAgent extends Agent {
     	//TODO
         // MAKE SURE YOU CALL printTestData after you finish a test episode.
     	//System.out.println(cumulativeReward);
+    	//System.out.println(numEpisodesCompleted);
     	if(!runningEvals) {
-    		//numEpisodesCompleted++;
+    		numEpisodesCompleted++;
     	}
     	else {
     		evalReward += cumulativeReward;
@@ -329,12 +327,13 @@ public class RLAgent extends Agent {
     			avgRewards.add(evalReward);
     		}
     	}
+
     	if(numEpisodesCompleted >= numEpisodes) {
     		printTestData(avgRewards);
     		System.out.println("Completed all episodes! Exiting now");
     		System.exit(0);
     	}
-    	numEpisodesCompleted++;
+    	//numEpisodesCompleted++;
         // Save your weights
         saveWeights(weights);
 
@@ -517,16 +516,12 @@ public class RLAgent extends Agent {
     	//TODO
     	//Qw(s,a) = summation(wi * fi(s,a)
     	double Qw = 0;
-    	if(stateView.getUnit(attackerId) == null || stateView.getUnit(defenderId) == null) {
-    		int j = 0;
-    	}
+
     	double [] feature = calculateFeatureVector(stateView, historyView, attackerId, defenderId);
     	for(int i = 0; i < weights.length; i++){
     		Qw += weights[i] * feature[i];
     	}
-    	if(Qw > 100 || Qw < -100) {
-    		int j = 0;
-    	}
+
         return Qw;
     }
 
