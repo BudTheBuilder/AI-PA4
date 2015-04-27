@@ -362,16 +362,6 @@ public class RLAgent extends Agent {
     	for(int enemyID: enemyFootmen){
     		Qprime = Math.max(Qprime, calcQValue(stateView, historyView, footmanId, enemyID));
     	}
-    	int lastTurnNum = stateView.getTurnNumber()-1;
-    	int enemyId = 0;
-    	Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(playernum, lastTurnNum);
-        /*for (Map.Entry<Integer, Action> commandEntry : commandsIssued.entrySet()) {
-            if(commandEntry.getKey() == footmanId){
-            	//make sure this gets the ID of the attacked enemy
-            	enemyId = commandEntry.getValue().getUnitId();
-            }
-        	System.out.println("Unit " + commandEntry.getKey() + " was commanded to " + commandEntry.getValue().toString());
-        }*/
     	
     	for(int i = 0; i < oldWeights.length; i++)
     	{
@@ -559,9 +549,12 @@ public class RLAgent extends Agent {
     	Unit.UnitView enemyUnit = stateView.getUnit(defenderId);
     	
     	//First feature is the inverse of the euclidean distance between the footmen and the enemy unit
+    	//It's better to attack nearby enemy than ones farther away
     	featureArr[1] = 1.0 / (euclideanDistance(myUnit, enemyUnit) + 1.0);
     	//featureArr[1] = euclideanDistance(myUnit, enemyUnit);
+    	
     	//Second feature is the ratio of their hp
+    	//It's better to attack things weaker than you are
     	featureArr[2] = (double)myUnit.getHP() / (double)enemyUnit.getHP();
     	
     	
