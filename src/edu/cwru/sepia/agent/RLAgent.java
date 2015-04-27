@@ -364,7 +364,7 @@ public class RLAgent extends Agent {
     	
     	for(int i = 0; i < oldWeights.length; i++)
     	{
-    		w[i] = oldWeights[i] + (learningRate * ((totalReward + gamma * Qprime - prevQValues.get(footmanId))) * oldFeatures[i]);
+    		w[i] = oldWeights[i] - (learningRate * (-(totalReward + gamma * Qprime - prevQValues.get(footmanId))) * oldFeatures[i]);
     	}
     	return w;
     }
