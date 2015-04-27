@@ -7,6 +7,9 @@ saved weights
 This README
 
 RLAgent.java Notes:
+
+We are storing the discounted rewards for each footmen in a HashMap, as well as the features for each footmen, and the previous state’s Q values. These will be used in the when we are updating weights (since they require the previous state’s features and Q values)
+
 * initialStep()
 	* Determines whether it's a test episode or a learning episode
 * middleStep()
